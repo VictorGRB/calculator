@@ -86,3 +86,7 @@ function calculate() {
     showError("Invalid expression");
   }
 }
+
+window.onload = () => {
+  document.body.classList.add('fade-in');
+};

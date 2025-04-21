@@ -26,6 +26,11 @@ body {
       transform: translateY(0);
     }
   }
+  
+  /* Apply fade-in to the whole body or container */
+  body.fade-in {
+    animation: fadeIn 1s ease-in-out;
+  }
 
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
