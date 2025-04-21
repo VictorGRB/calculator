@@ -117,3 +117,91 @@ button:active {
   transform: scale(0.95);
   box-shadow: inset 0 0 5px #aaa;
 }
+
+.scientific-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* .scientific-buttons button {
+  margin: 5px;
+  padding: 10px 14px;
+  font-size: 16px;
+} */
+
+.scientific-buttons button {
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px;
+  border: 1px solid #ccc; /* Light border for each scientific button */
+  border-radius: 5px;
+  margin: 5px;
+  transition: all 0.3s ease;
+}
+.scientific-buttons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+
+.history {
+  position: fixed;
+  right: 10px;
+  top: 10%;
+  width: 25%;
+  background: #f5f5f5;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  height: 80%;
+}
+
+.history h3 {
+  margin-top: 0;
+}
+
+.history ul {
+  list-style: none;
+  padding: 0;
+}
+
+.history li {
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.history li span {
+  cursor: pointer;
+  color: #007bff;
+}
+
+.history li span:hover {
+  text-decoration: underline;
+}
+
+#clear-history-btn {
+  background-color: #ff4d4d; /* Red button for "Clear History" */
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  width: 99%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#clear-history-btn:hover {
+  background-color: #e60000;
+}

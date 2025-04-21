@@ -36,7 +36,30 @@
       <button onclick="appendValue('0')" class="zero">0</button>
       <button onclick="appendValue('.')">.</button>
     </div>
+    <div class="scientific-buttons">
+      <button onclick="appendFunction('Math.sqrt(')">√</button>
+      <button onclick="appendFunction('**2')">x²</button>
+      <button onclick="appendFunction('**')">xʸ</button>
+      <button onclick="appendFunction('Math.sin(')">sin</button>
+      <button onclick="appendFunction('Math.cos(')">cos</button>
+      <button onclick="appendFunction('Math.tan(')">tan</button>
+      <button onclick="appendFunction('Math.log10(')">log</button>
+      <button onclick="appendFunction('Math.log(')">ln</button>
+      <button onclick="appendPi()">π</button>
+      <button onclick="appendE()">e</button>
+    </div>
+    
+  </div>
+
+  <div id="history-panel" class="history">
+    <h3>History</h3>
+    <button id="clear-history-btn">Clear History</button>
+    <ul id="history-list">
+      <!-- Calculations will be added here -->
+    </ul>
   </div>
   <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 </body>
 </html>
