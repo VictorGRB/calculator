@@ -7,7 +7,7 @@ body {
   height: 100vh;
   margin: 0;
 
-  background-image: url('fantasypic.jpg');
+  background-image: url('space.jpg');
   background-size: cover;
   /* Ensures the image covers the entire page */
   background-position: center center;
