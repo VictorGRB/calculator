@@ -438,14 +438,20 @@ document.getElementById("display").addEventListener('input', handleSqrtInput);
 document.getElementById("toggle-dark-mode").addEventListener("click", toggleDarkMode);
 
 function toggleDarkMode() {
-  const body = document.body;
-  const calculator = document.querySelector(".calculator");
-  const historyPanel = document.getElementById("history-panel");
-  const memoryPanel = document.getElementById("memory-panel");
+  const isDark = document.body.classList.toggle("dark-mode");
 
-  // Toggle dark mode on the body and other relevant elements
-  body.classList.toggle("dark-mode");
-  calculator.classList.toggle("dark-mode");
-  historyPanel.classList.toggle("dark-mode");
-  memoryPanel.classList.toggle("dark-mode");
+  // Save the current state in localStorage
+  if (isDark) {
+    localStorage.setItem('darkMode', 'enabled');
+  } else {
+    localStorage.removeItem('darkMode');
+  }
 }
+
+
+// Check if dark mode is enabled in localStorage on page load
+window.addEventListener('load', () => {
+  if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');  // Apply dark mode if it's saved
+  }
+});
