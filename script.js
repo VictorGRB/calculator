@@ -58,6 +58,7 @@ function showError(message = "Error") {
   }, 300);
 }
 
+
 function calculate() {
   const display = document.getElementById("display");
   let input = display.value.trim();
@@ -101,13 +102,22 @@ function calculate() {
     } else if (isNaN(result)) {
       showError("Invalid expression");
     } else {
-      display.value = result;
+      display.value = result;     
       display.scrollLeft = display.scrollWidth;
       addToHistory(originalInput, result);
+
     }
   } catch (error) {
     showError("Invalid expression");
   }
+  const equalsBtn = document.getElementById("equals-btn");
+
+party.sparkles(equalsBtn, {
+  count: 50,
+  spread: 30,
+  speed: 0.5,
+  color: party.Color.fromHex("#66ccff")
+});
 }
 
 
@@ -143,6 +153,7 @@ function appendFunction(func) {
     }
 
     display.value = evaluated;
+      
     display.scrollLeft = display.scrollWidth;
   } catch {
     showError("Invalid Expression");

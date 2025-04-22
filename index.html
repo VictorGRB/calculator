@@ -6,6 +6,7 @@
   <title>Calculator</title>
   <link rel="icon" href="favicon.ico.png" type="image/x-icon" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
 </head>
 <body>
   <div class="calculator">
@@ -30,7 +31,7 @@
       <button onclick="appendValue('2')">2</button>
       <button onclick="appendValue('3')">3</button>
 
-      <button onclick="calculate()">=</button>
+      <button id="equals-btn" onclick="calculate()">=</button>
 
 
       <button onclick="appendValue('0')" class="zero">0</button>
@@ -58,8 +59,25 @@
       <!-- Calculations will be added here -->
     </ul>
   </div>
-  <script src="script.js"></script>
+  
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="script.js"></script>
+  <!-- <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const button = document.getElementById("equals-btn");
+
+      button.addEventListener("click", (e) => {
+        party.sparkles(e.target, {
+          count: 30,
+          speed: 1.5,
+          spread: 50,
+          color: party.Color.fromHex("#aeeeee")
+        });
+      });
+    });
+  </script> -->
+  
+
 
 </body>
 </html>
