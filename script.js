@@ -1,4 +1,6 @@
-let history = [];
+// JavaScript code for the calculator app
+// This code handles the calculator's functionality, including basic operations, scientific functions, and history management.
+let history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
 function appendValue(value) {
   const display = document.getElementById("display");
   let current = display.value.trim();
@@ -12,7 +14,6 @@ function appendValue(value) {
     return;
   }
 
-
   // Clear error message before appending new input
   const errorMessages = [
     "Error",
@@ -22,7 +23,9 @@ function appendValue(value) {
     "Cannot divide by 0",
     "Empty expression",
     "Invalid expression",
-    "Invalid Input"
+    "Invalid Input",
+    "NaN",
+    "Imaginary result",
   ];
 
   if (errorMessages.includes(display.value)) {
@@ -64,8 +67,6 @@ function calculate() {
   let input = display.value.trim();
   const originalInput = input;
 
-  console.log("Input before processing:", input);
-
   if (!input || /^[+\/*]+$/.test(input)) return;
 
   // Allow only valid characters (numbers, operators, and scientific functions)
@@ -78,7 +79,6 @@ function calculate() {
   input = input.replace(/--/g, '+');
 
   const sanitized = input.replace(/\s+/g, '');
-  console.log("Sanitized input after handling --:", sanitized);
 
   // ✅ Disallow invalid operator usage (like ++, ***, etc.)
   if (/(\+{2,}|\/{2,}|\*{3,}|\-{3,})/.test(sanitized)) {
@@ -92,8 +92,8 @@ function calculate() {
     return;
   }
 
-   // Check if the input is specifically "0/0"
-   if (input === '0/0') {
+  // Check if the input is specifically "0/0"
+  if (input === '0/0') {
     showError("Error"); // Display "Error" for 0/0 case
     return;
   }
@@ -101,14 +101,13 @@ function calculate() {
   // Try to evaluate the expression
   try {
     const result = new Function('"use strict"; return (' + input + ')')();
-    console.log("Evaluation result:", result);
 
     if (result === Infinity || result === -Infinity) {
       showError("Cannot divide by 0");
     } else if (isNaN(result)) {
       showError("Invalid expression");
     } else {
-      display.value = result;     
+      display.value = result;
       display.scrollLeft = display.scrollWidth;
       addToHistory(originalInput, result);
 
@@ -118,12 +117,12 @@ function calculate() {
   }
   const equalsBtn = document.getElementById("equals-btn");
 
-party.sparkles(equalsBtn, {
-  count: 50,
-  spread: 30,
-  speed: 0.5,
-  color: party.Color.fromHex("#66ccff")
-});
+  party.sparkles(equalsBtn, {
+    count: 50,
+    spread: 30,
+    speed: 0.5,
+    color: party.Color.fromHex("#66ccff")
+  });
 }
 
 
@@ -136,18 +135,56 @@ function appendFunction(func) {
     "Cannot divide by 0",
     "Invalid Input",
     "Starts with operator",
-    "Ends with operator"
+    "Ends with operator",
+    "Invalid operator usage",
+    "NaN",
+    "Imaginary result",
   ];
 
+  // Handle "Imaginary result" explicitly since it's a custom error message
+  if (display.value === "Imaginary result") {
+    display.value = '';  // Clear the display if it's an "Imaginary result"
+  }
+
+  // Clear the display if there's an error message (except "Imaginary result")
+  if (errors.includes(display.value) && display.value !== "Imaginary result") {
+    display.value = '';  // Clear the display if it's a different error message
+  }
+
+  // Ensure there's a value to apply a function to
   if (!value || errors.includes(value)) {
     showError("Nothing to apply function to");
     return;
   }
 
+  // Handle the square root function
+  if (func === 'Math.sqrt(') {
+    const result = parseFloat(value); // Parse the value into a float
+
+    if (isNaN(result)) {
+      showError("Invalid Input");
+      return; // Exit if the value is not a number
+    }
+
+    if (result < 0) {
+      // If the result is negative, show the error
+      showError("Imaginary result");
+      return; // Return immediately to prevent further calculations
+    }
+
+    // Perform the square root calculation for non-negative numbers
+    display.value = Math.sqrt(result); // Set the result directly to the display
+    addToHistory(`Math.sqrt(${result})`, Math.sqrt(result));  // Optionally, add to history
+
+    return; // Exit the function after the result is set
+  }
+
+  // If it's not a square root, proceed with other calculations
   try {
-    const result = new Function('return ' + value)();
+    const result = new Function('return ' + value)(); // Evaluate the expression
     let evaluated;
 
+    // Handle other functions
     if (func === '**2') {
       evaluated = result ** 2;
     } else if (func === '**') {
@@ -158,26 +195,47 @@ function appendFunction(func) {
       evaluated = new Function('return ' + func + result + ')')();
     }
 
+    // Set the evaluated result to the display
     display.value = evaluated;
     addToHistory(`${func}(${result})`, evaluated);
-      
+
     display.scrollLeft = display.scrollWidth;
+
   } catch {
     showError("Invalid Expression");
   }
 }
 
+// Function to show error messages
+function showError(message) {
+  const display = document.getElementById("display");
+  display.value = message;
+  display.classList.add("shake");
+
+  // Auto-scroll to end of long message
+  display.scrollLeft = display.scrollWidth;
+
+  // Remove shake animation class after it's done
+  setTimeout(() => {
+    display.classList.remove("shake");
+  }, 300);
+}
+
+
 function appendPi() {
   const display = document.getElementById("display");
   const current = display.value.trim();
 
-  // If the current value is just a number, multiply it by Math.PI
-  if (/^\d+$/.test(current)) {
+  // Check if the current display is just a number (positive, negative, or decimal)
+  if (/^-?\d+(\.\d+)?$/.test(current)) {
     const result = parseFloat(current) * Math.PI;
     display.value = result;
-    addToHistory(`${current} × π`, result);  // Update the display with the result
+    addToHistory(`${current} × π`, result);
+  } else if (!current || /[\+\-\*\/\(]$/.test(current)) {
+    display.value += 'Math.PI';
+  } else if (/[\d\)]$/.test(current)) {
+    display.value += '*Math.PI';
   } else {
-    // If there is no number before π, just append Math.PI
     display.value += 'Math.PI';
   }
 }
@@ -186,22 +244,28 @@ function appendE() {
   const display = document.getElementById("display");
   const current = display.value.trim();
 
-  // If the current value is just a number, multiply it by Math.E
-  if (/^\d+$/.test(current)) {
+  if (/^-?\d+(\.\d+)?$/.test(current)) {
     const result = parseFloat(current) * Math.E;
-    display.value = result;  // Update the display with the result
+    display.value = result;
     addToHistory(`${current} × e`, result);
+  } else if (!current || /[\+\-\*\/\(]$/.test(current)) {
+    display.value += 'Math.E';
+  } else if (/[\d\)]$/.test(current)) {
+    display.value += '*Math.E';
   } else {
-    // If there is no number before e, just append Math.E
     display.value += 'Math.E';
   }
 }
+
 
 function addToHistory(input, result) {
   const historyList = document.getElementById("history-list");
 
   // Push the calculation to the history array
   history.push({ input, result });
+
+  // Save history to localStorage
+  localStorage.setItem('calculatorHistory', JSON.stringify(history));
 
   // Create a new history item
   const historyItem = document.createElement("li");
@@ -212,7 +276,10 @@ function addToHistory(input, result) {
 function clearHistoryItem(index) {
   // Remove the history item from the array
   history.splice(index, 1);
-  
+
+  // Save the updated history to localStorage
+  localStorage.setItem('calculatorHistory', JSON.stringify(history));
+
   // Re-render the history list
   renderHistory();
 }
@@ -231,7 +298,12 @@ function renderHistory() {
 
 function clearHistory() {
   history = []; // Clear the history array
-  renderHistory(); // Re-render the empty history list
+
+  // Remove history from localStorage
+  localStorage.removeItem('calculatorHistory');
+
+  // Re-render the empty history list
+  renderHistory();
 
   // Create a temporary canvas over the history panel
   const panel = document.getElementById('history-panel');
@@ -263,6 +335,7 @@ function clearHistory() {
   }, 1500);
 }
 
+
 window.onload = () => {
   document.body.classList.add('fade-in');
   document.getElementById("clear-history-btn").addEventListener("click", clearHistory);
@@ -270,43 +343,38 @@ window.onload = () => {
 
 let memory = null;
 
+// Add to memory function
 function addToMemory() {
   const val = parseFloat(document.getElementById("display").value);
   if (!isNaN(val)) {
     memory = val;  // Set the memory to the current value
+    localStorage.setItem('calculatorMemory', memory); // Store it in localStorage
     updateMemoryDisplay();  // Update the memory display
   }
 }
 
+// Recall memory
 function recallMemory() {
-  const display = document.getElementById("display");
-  let memoryValue = memory;
+  let memoryValue = localStorage.getItem('calculatorMemory');
 
-  // If memory is null, do nothing
-  if (memoryValue === null) return;
+  // If memory is available, append it to the display
+  if (memoryValue) {
+    let currentDisplay = display.value;
 
-  // Get the current value in the display
-  let currentDisplay = display.value;
-
-  // Check if the memory value is a decimal number
-  if (memoryValue.toString().includes('.')) {
-    // Check if the current display already contains a decimal
-    if (currentDisplay.includes('.')) {
-      // If both memory value and current display have decimals, don't append the memory value
+    // Prevent appending if there's a decimal issue
+    if (currentDisplay.includes('.') && memoryValue.includes('.')) {
       return;
     }
+
+    display.value = currentDisplay + memoryValue;
   }
-
-  // If no decimal issue, append the memory value
-  display.value = currentDisplay + memoryValue;
-
-  // Update memory display after recalling
-  updateMemoryDisplay();
 }
 
+// Clear memory
 function clearMemory() {
-  memory = null; // Clear the memory
-  updateMemoryDisplay(); // Update the memory display to show it's empty
+  memory = null;
+  localStorage.removeItem('calculatorMemory'); // Remove from localStorage
+  updateMemoryDisplay();
 }
 
 function updateMemoryDisplay() {
@@ -314,22 +382,70 @@ function updateMemoryDisplay() {
   const mrBtn = document.getElementById("mr-btn");
   const mcBtn = document.getElementById("mc-btn");
 
-  if (memory !== null) {
-    memoryDisplay.innerText = "Memory: " + memory; // Display the stored memory
-    mrBtn.disabled = false; // Enable MR button
-    mcBtn.disabled = false; // Enable MC button
+  // Check if memory is in localStorage
+  if (localStorage.getItem('calculatorMemory') !== null) {
+    memoryDisplay.innerText = "Memory: " + localStorage.getItem('calculatorMemory');
+    mrBtn.disabled = false;
+    mcBtn.disabled = false;
   } else {
-    memoryDisplay.innerText = "Memory: (empty)"; // Indicate memory is empty
-    mrBtn.disabled = true; // Disable MR button
-    mcBtn.disabled = true; // Disable MC button
+    memoryDisplay.innerText = "Memory: (empty)";
+    mrBtn.disabled = true;
+    mcBtn.disabled = true;
   }
 }
 
 window.onload = () => {
   // Set the initial state of the memory display and buttons
   updateMemoryDisplay();
-  
+
   // Your other code on load
   document.body.classList.add('fade-in');
   document.getElementById("clear-history-btn").addEventListener("click", clearHistory);
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateMemoryDisplay();
+
+  renderHistory();
+});
+
+function handleSqrtInput() {
+  const display = document.getElementById("display");
+  let input = display.value.trim();
+
+  // Regular expression to find sqrt(number) patterns
+  const sqrtRegex = /sqrt\((-?\d+(\.\d+)?)\)/g;
+
+  // Check if input includes the sqrt pattern
+  if (sqrtRegex.test(input)) {
+    // Replace all occurrences of sqrt(<number>) with the result of the square root calculation
+    input = input.replace(sqrtRegex, (match, numStr) => {
+      const num = parseFloat(numStr);  // Extract the number inside the sqrt() function
+      if (num < 0) {
+        return Math.sqrt(Math.abs(num)) + 'i'; // Return the imaginary result for negative numbers
+      } else {
+        return Math.sqrt(num); // Return the normal square root for positive numbers
+      }
+    });
+
+    // Update the display with the new input
+    display.value = input;
+  }
+}
+
+// Call this function every time the user types
+document.getElementById("display").addEventListener('input', handleSqrtInput);
+document.getElementById("toggle-dark-mode").addEventListener("click", toggleDarkMode);
+
+function toggleDarkMode() {
+  const body = document.body;
+  const calculator = document.querySelector(".calculator");
+  const historyPanel = document.getElementById("history-panel");
+  const memoryPanel = document.getElementById("memory-panel");
+
+  // Toggle dark mode on the body and other relevant elements
+  body.classList.toggle("dark-mode");
+  calculator.classList.toggle("dark-mode");
+  historyPanel.classList.toggle("dark-mode");
+  memoryPanel.classList.toggle("dark-mode");
+}
