@@ -279,14 +279,17 @@ function addToMemory() {
 }
 
 function recallMemory() {
-  // Retrieve the value from memory
+  const display = document.getElementById("display");
   let memoryValue = memory;
-  
+
+  // If memory is null, do nothing
+  if (memoryValue === null) return;
+
   // Get the current value in the display
   let currentDisplay = display.value;
 
   // Check if the memory value is a decimal number
-  if (memoryValue.includes('.')) {
+  if (memoryValue.toString().includes('.')) {
     // Check if the current display already contains a decimal
     if (currentDisplay.includes('.')) {
       // If both memory value and current display have decimals, don't append the memory value
@@ -296,11 +299,14 @@ function recallMemory() {
 
   // If no decimal issue, append the memory value
   display.value = currentDisplay + memoryValue;
+
+  // Update memory display after recalling
+  updateMemoryDisplay();
 }
 
 function clearMemory() {
-  memory = null;
-  updateMemoryDisplay();
+  memory = null; // Clear the memory
+  updateMemoryDisplay(); // Update the memory display to show it's empty
 }
 
 function updateMemoryDisplay() {
@@ -309,13 +315,13 @@ function updateMemoryDisplay() {
   const mcBtn = document.getElementById("mc-btn");
 
   if (memory !== null) {
-    memoryDisplay.innerText = "Memory: " + memory;
-    mrBtn.disabled = false;
-    mcBtn.disabled = false;
+    memoryDisplay.innerText = "Memory: " + memory; // Display the stored memory
+    mrBtn.disabled = false; // Enable MR button
+    mcBtn.disabled = false; // Enable MC button
   } else {
-    memoryDisplay.innerText = "Memory: (empty)";
-    mrBtn.disabled = true;
-    mcBtn.disabled = true;
+    memoryDisplay.innerText = "Memory: (empty)"; // Indicate memory is empty
+    mrBtn.disabled = true; // Disable MR button
+    mcBtn.disabled = true; // Disable MC button
   }
 }
 
