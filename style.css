@@ -22,7 +22,7 @@ body {
   width: 300px;
   /* or whatever size you're using */
   padding: 20px;
-  background: #f5f5f5;
+  background: #f9e5a8;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   overflow: hidden;
@@ -71,15 +71,17 @@ body.fade-in {
 
 #display {
   width: 100%;
-  height: 60px;
-  font-size: 1.5rem;
-  /* always the same */
+  height: 80px; /* Increase height */
+  font-size: 2rem; /* Increase font size */
   padding: 10px;
   text-align: right;
   overflow-x: auto;
   white-space: nowrap;
   margin-bottom: 15px;
   box-sizing: border-box;
+  border: 2px solid #F4C542; /* Add border color */
+  border-radius: 10px; /* Rounded corners */
+  background-color: #fff; /* Keep the background white */
 }
 
 
@@ -92,13 +94,13 @@ body.fade-in {
 button {
   padding: 20px;
   font-size: 1.2em;
-  border: none;
+  border: 2px solid #4a3d2f; /* Dark brown border */
   background: #e0e0e0;
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.2s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
-
 
 button.zero {
   grid-column: span 2;
@@ -109,11 +111,13 @@ button {
 }
 
 button:hover {
+  background-color: #d1d1d1; /* Slightly darker gray on hover */
   transform: scale(1.05);
-  box-shadow: 0 0 10px #ccc;
+  box-shadow: 0 0 10px #bbb; /* Slightly darker shadow */
 }
 
 button:active {
+  background-color: #c4c4c4; /* Darker gray on active */
   transform: scale(0.95);
   box-shadow: inset 0 0 5px #aaa;
 }
@@ -124,12 +128,6 @@ button:active {
   justify-content: center;
   margin-top: 10px;
 }
-
-/* .scientific-buttons button {
-  margin: 5px;
-  padding: 10px 14px;
-  font-size: 16px;
-} */
 
 .scientific-buttons button {
   background-color: #f0f0f0;
@@ -156,7 +154,7 @@ button:active {
   right: 10px;
   top: 10%;
   width: 25%;
-  background: #f5f5f5;
+  background: #f9e5a8;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -204,4 +202,79 @@ button:active {
 
 #clear-history-btn:hover {
   background-color: #e60000;
+}
+
+/* Container for all the panels (remove flex container) */
+#container {
+  height: 100vh; /* Full height */
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative; /* Add this to position elements inside it relative to the container */
+  overflow: hidden; /* To prevent scrolling on the main container */
+}
+
+/* Memory Panel - Positioned on the left */
+#memory-panel {
+  position: absolute; /* Use absolute positioning */
+  top: 100px; /* Move it further down (increase this value to move down more) */
+  left: 40px; /* Move it more to the right (increase this value to move right more) */
+  width: 280px; /* Set width for the memory panel */
+  padding: 20px;
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  background-color: #f9e5a8; /* Light background */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Add shadow */
+  max-height: 80vh; /* Maximum height is 80% of the screen height */
+  overflow-y: auto; /* Enable vertical scrolling if needed */
+  z-index: 1; /* Ensure it stays above other content */
+}
+/* Memory Display (Current Value) */
+#memory-display {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: bold;
+  text-align: center; /* Center the text */
+}
+
+/* Memory Buttons - Blue background */
+#memory-panel button {
+  font-size: 1.2em; /* Button font size */
+  padding: 15px;
+  margin: 10px 0;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF; /* Blue color */
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+}
+
+/* Button hover effect */
+#memory-panel button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05); /* Slightly increase size on hover */
+}
+
+/* Disabled Button styling */
+#memory-panel button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+  color: #aaa;
+}
+
+/* Active state for buttons */
+#memory-panel button:active {
+  background-color: #004085;
+  transform: scale(0.95); /* Slightly shrink on active */
+}
+
+/* Memory Panel Header */
+#memory-panel h3 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: #333;
+  text-align: center; /* Center the title */
 }

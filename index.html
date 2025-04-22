@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculator</title>
   <link rel="icon" href="favicon.ico.png" type="image/x-icon" />
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
 </head>
+
 <body>
   <div class="calculator">
     <input type="text" id="display" disabled />
@@ -49,7 +51,7 @@
       <button onclick="appendPi()">π</button>
       <button onclick="appendE()">e</button>
     </div>
-    
+
   </div>
 
   <div id="history-panel" class="history">
@@ -59,25 +61,19 @@
       <!-- Calculations will be added here -->
     </ul>
   </div>
-  
+
+  <div id="memory-panel">
+    <h3>Memory</h3>
+    <div id="memory-display">Memory: (empty)</div>
+    <button onclick="addToMemory()">M+</button>
+    <button id="mr-btn" onclick="recallMemory()">MR</button>
+    <button id="mc-btn" onclick="clearMemory()">MC</button>
+  </div>
+
+
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="script.js"></script>
-  <!-- <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const button = document.getElementById("equals-btn");
-
-      button.addEventListener("click", (e) => {
-        party.sparkles(e.target, {
-          count: 30,
-          speed: 1.5,
-          spread: 50,
-          color: party.Color.fromHex("#aeeeee")
-        });
-      });
-    });
-  </script> -->
-  
-
 
 </body>
+
 </html>

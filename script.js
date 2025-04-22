@@ -92,6 +92,12 @@ function calculate() {
     return;
   }
 
+   // Check if the input is specifically "0/0"
+   if (input === '0/0') {
+    showError("Error"); // Display "Error" for 0/0 case
+    return;
+  }
+
   // Try to evaluate the expression
   try {
     const result = new Function('"use strict"; return (' + input + ')')();
@@ -153,6 +159,7 @@ function appendFunction(func) {
     }
 
     display.value = evaluated;
+    addToHistory(`${func}(${result})`, evaluated);
       
     display.scrollLeft = display.scrollWidth;
   } catch {
@@ -167,7 +174,8 @@ function appendPi() {
   // If the current value is just a number, multiply it by Math.PI
   if (/^\d+$/.test(current)) {
     const result = parseFloat(current) * Math.PI;
-    display.value = result;  // Update the display with the result
+    display.value = result;
+    addToHistory(`${current} × π`, result);  // Update the display with the result
   } else {
     // If there is no number before π, just append Math.PI
     display.value += 'Math.PI';
@@ -182,6 +190,7 @@ function appendE() {
   if (/^\d+$/.test(current)) {
     const result = parseFloat(current) * Math.E;
     display.value = result;  // Update the display with the result
+    addToHistory(`${current} × e`, result);
   } else {
     // If there is no number before e, just append Math.E
     display.value += 'Math.E';
@@ -255,6 +264,66 @@ function clearHistory() {
 }
 
 window.onload = () => {
+  document.body.classList.add('fade-in');
+  document.getElementById("clear-history-btn").addEventListener("click", clearHistory);
+};
+
+let memory = null;
+
+function addToMemory() {
+  const val = parseFloat(document.getElementById("display").value);
+  if (!isNaN(val)) {
+    memory = val;  // Set the memory to the current value
+    updateMemoryDisplay();  // Update the memory display
+  }
+}
+
+function recallMemory() {
+  // Retrieve the value from memory
+  let memoryValue = memory;
+  
+  // Get the current value in the display
+  let currentDisplay = display.value;
+
+  // Check if the memory value is a decimal number
+  if (memoryValue.includes('.')) {
+    // Check if the current display already contains a decimal
+    if (currentDisplay.includes('.')) {
+      // If both memory value and current display have decimals, don't append the memory value
+      return;
+    }
+  }
+
+  // If no decimal issue, append the memory value
+  display.value = currentDisplay + memoryValue;
+}
+
+function clearMemory() {
+  memory = null;
+  updateMemoryDisplay();
+}
+
+function updateMemoryDisplay() {
+  const memoryDisplay = document.getElementById("memory-display");
+  const mrBtn = document.getElementById("mr-btn");
+  const mcBtn = document.getElementById("mc-btn");
+
+  if (memory !== null) {
+    memoryDisplay.innerText = "Memory: " + memory;
+    mrBtn.disabled = false;
+    mcBtn.disabled = false;
+  } else {
+    memoryDisplay.innerText = "Memory: (empty)";
+    mrBtn.disabled = true;
+    mcBtn.disabled = true;
+  }
+}
+
+window.onload = () => {
+  // Set the initial state of the memory display and buttons
+  updateMemoryDisplay();
+  
+  // Your other code on load
   document.body.classList.add('fade-in');
   document.getElementById("clear-history-btn").addEventListener("click", clearHistory);
 };
